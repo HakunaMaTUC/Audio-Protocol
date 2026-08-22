@@ -77,26 +77,31 @@ class ProtocolStore:
             )
             return protocol_id
 
-    def query_numbers(
-        self,
-        question: str,
-    ) -> list[dict]:
-        q = f"%{question.lower()}%"
+    def query_numbers(self, terms: list[str]) -> list[dict]:
+        if not terms:
+            terms = [""]
+        where_clauses = []
+        params: list[str] = []
+        for _ in terms:
+            where_clauses.append(
+                "(LOWER(n.context) LIKE ? OR LOWER(n.source_quote) LIKE ? OR LOWER(p.project) LIKE ?)"
+            )
+        for t in terms:
+            like = f"%{t.lower()}%"
+            params.extend([like, like, like])
+        where_sql = " AND ".join(where_clauses)
         with self._connect() as conn:
             conn.row_factory = sqlite3.Row
             rows = conn.execute(
-                """
+                f"""
                 SELECT p.id AS protocol_id, p.date, p.project, n.value, n.unit, n.context,
                        n.speaker, n.timestamp, n.source_quote, n.confidence
                 FROM critical_numbers n
                 JOIN protocols p ON p.id = n.protocol_id
-                WHERE LOWER(n.context) LIKE ?
-                   OR LOWER(n.source_quote) LIKE ?
-                   OR LOWER(p.project) LIKE ?
+                WHERE {where_sql}
                 ORDER BY p.date DESC, n.confidence DESC
                 LIMIT 25
                 """,
-                (q, q, q),
+                params,
             ).fetchall()
         return [dict(row) for row in rows]
-

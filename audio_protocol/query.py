@@ -14,6 +14,30 @@ WEEKDAYS = {
     "saturday": 5,
     "sunday": 6,
 }
+STOP_WORDS = {
+    "what",
+    "did",
+    "we",
+    "on",
+    "the",
+    "a",
+    "an",
+    "is",
+    "was",
+    "were",
+    "of",
+    "for",
+    "to",
+    "in",
+    "last",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+}
 
 
 def _last_weekday(target: int) -> str:
@@ -37,9 +61,16 @@ def main() -> None:
             weekday_filter = _last_weekday(day_value)
             break
 
-    results = store.query_numbers(question=question.replace("last ", ""))
+    terms = [
+        t
+        for t in "".join(c if c.isalnum() or c == " " else " " for c in question).split()
+        if len(t) > 2 and t not in STOP_WORDS
+    ]
+    results = store.query_numbers(terms=terms)
     if weekday_filter:
-        results = [r for r in results if r["date"] == weekday_filter]
+        filtered = [r for r in results if r["date"] == weekday_filter]
+        if filtered:
+            results = filtered
 
     if not results:
         print("No matching protocol evidence found.")
@@ -56,4 +87,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
