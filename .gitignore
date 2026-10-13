@@ -1,0 +1,41 @@
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Private audio and generated data
+data/local/
+data/raw/
+data/processed/
+outputs/
+*.wav
+*.WAV
+*.mp3
+*.MP3
+*.m4a
+*.M4A
+*.flac
+*.ogg
+*.txt
+
+# Local model files and caches
+models/
+model_cache/
+hf_cache/
+.cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Editors and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
