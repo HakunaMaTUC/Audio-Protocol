@@ -39,3 +39,6 @@ hf_cache/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Local screenshots and captures
+Screenshot*
