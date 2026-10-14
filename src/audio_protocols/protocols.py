@@ -4,10 +4,10 @@ Dieses Modul enthält bewusst keine automatische inhaltliche Extraktion. Es
 definiert nur die fachliche Zielstruktur für spätere Generatoren.
 """
 
+from collections.abc import Mapping
 from dataclasses import dataclass, field
 from math import isfinite
-from typing import Any, Mapping, TypeAlias
-
+from typing import Any, TypeAlias
 
 SCHEMA_VERSION = "0.1"
 PROTOCOL_TYPE = "ergebnisprotokoll"
@@ -190,16 +190,22 @@ def _require_nonempty_text(value: object, field_name: str) -> None:
 
 def _validate_evidence(value: object, field_name: str) -> None:
     if not isinstance(value, list) or not value:
-        raise ProtocolValidationError(f"{field_name} muss mindestens einen Evidenzbereich enthalten.")
+        raise ProtocolValidationError(
+            f"{field_name} muss mindestens einen Evidenzbereich enthalten."
+        )
     for index, evidence in enumerate(value):
         if not isinstance(evidence, Mapping):
             raise ProtocolValidationError(f"{field_name}[{index}] ist kein Objekt.")
         start = evidence.get("start_seconds")
         end = evidence.get("end_seconds")
         if not isinstance(start, (int, float)) or isinstance(start, bool):
-            raise ProtocolValidationError(f"{field_name}[{index}].start_seconds ist ungültig.")
+            raise ProtocolValidationError(
+                f"{field_name}[{index}].start_seconds ist ungültig."
+            )
         if not isinstance(end, (int, float)) or isinstance(end, bool):
-            raise ProtocolValidationError(f"{field_name}[{index}].end_seconds ist ungültig.")
+            raise ProtocolValidationError(
+                f"{field_name}[{index}].end_seconds ist ungültig."
+            )
         try:
             valid_range = EvidenceRange(float(start), float(end))
         except (TypeError, ValueError, ProtocolValidationError) as exc:
@@ -207,7 +213,9 @@ def _validate_evidence(value: object, field_name: str) -> None:
                 f"{field_name}[{index}] enthält einen ungültigen Zeitbereich."
             ) from exc
         if valid_range.end_seconds < valid_range.start_seconds:
-            raise ProtocolValidationError(f"{field_name}[{index}] endet vor seinem Beginn.")
+            raise ProtocolValidationError(
+                f"{field_name}[{index}] endet vor seinem Beginn."
+            )
 
 
 def _validate_quality(value: object) -> None:
@@ -302,7 +310,9 @@ def validate_result_protocol(payload: Mapping[str, Any]) -> None:
             raise ProtocolValidationError(f"open_points[{index}] ist kein Objekt.")
         _require_nonempty_text(item.get("text"), f"open_points[{index}].text")
         if item.get("status") != "open":
-            raise ProtocolValidationError(f"open_points[{index}].status muss open sein.")
+            raise ProtocolValidationError(
+                f"open_points[{index}].status muss open sein."
+            )
         _validate_evidence(item.get("evidence"), f"open_points[{index}].evidence")
 
     _validate_quality(payload["quality"])
