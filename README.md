@@ -47,9 +47,14 @@ Als Ausgangsbasis sind Python und `faster-whisper` für die lokale Transkription
 
 ## Entwicklungsstand
 
-Der erste Entwicklungsschritt konzentriert sich auf eine zuverlässig nutzbare lokale Transkription mit Zeitstempeln und nachvollziehbaren Ausgaben. Sprechererkennung, die automatische Erstellung der drei Protokolltypen und weitere Exportformate sind nachgelagerte Ausbaustufen.
+Der erste Entwicklungsschritt, MVP 1, umfasst eine lokal ausführbare Python-
+Kommandozeile für WAV- und MP3-Dateien. Sie verwendet `faster-whisper` mit
+CPU/INT8 als Standard, erkennt die Sprache automatisch und erzeugt JSON- sowie
+Markdown-Ausgaben mit Zeitstempeln. Die Einrichtung und Bedienung ist in
+[`docs/MVP1.md`](docs/MVP1.md) beschrieben.
 
-Die genannten Funktionen beschreiben das Entwicklungsziel und sind nicht automatisch bereits implementiert.
+Sprechererkennung, die automatische Erstellung der drei Protokolltypen und
+weitere Exportformate sind nachgelagerte Ausbaustufen.
 
 ## Datenschutz und Umgang mit Daten
 

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "audio-protocols"
+version = "0.1.0"
+description = "Lokale Transkription von Audioaufnahmen als MVP für Audio-Protocols"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "faster-whisper>=1.1,<2",
+    # PyAV 19 entfernt metadata_errors, das veröffentlichte faster-whisper-Versionen noch verwenden können.
+    "av>=11,<19",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8,<9",
+]
+
+[project.scripts]
+audio-protocols = "audio_protocols.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
